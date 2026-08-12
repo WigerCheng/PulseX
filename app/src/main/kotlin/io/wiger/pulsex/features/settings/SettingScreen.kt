@@ -18,6 +18,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -37,12 +38,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.wiger.pulsex.R
 import io.wiger.pulsex.core.bluetooth.BluetoothUtil
 import io.wiger.pulsex.core.notification.NotificationProvider
+import io.wiger.pulsex.ui.PulseXIcons
 import io.wiger.pulsex.widget.HeartbeatWidgetReceiver
 
 @SuppressLint("MissingPermission")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingScreen(
+    onLogsClick: () -> Unit = {},
     viewModel: SettingViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -200,6 +203,43 @@ fun SettingScreen(
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = stringResource(R.string.settings_debug_section),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold
+            )
+
+            Card(
+                onClick = onLogsClick,
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                )
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.settings_logs_title),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    Icon(
+                        imageVector = PulseXIcons.ArrowForward,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }

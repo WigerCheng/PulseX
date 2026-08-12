@@ -47,6 +47,9 @@
     <string name="settings_grant_button">Grant</string>
     <string name="settings_info_section">App Info</string>
     <string name="settings_version_label">Version</string>
+    <string name="settings_debug_section">Debug &amp; Logs</string>
+    <string name="settings_logs_title">Bluetooth Debug Logs</string>
+    <string name="logs_clear_button">Clear Logs</string>
 
     <string name="settings_widget_section">Home Screen Widget</string>
     <string name="settings_add_widget_button">Add Heart Rate Widget</string>

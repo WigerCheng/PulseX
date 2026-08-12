@@ -47,6 +47,9 @@
     <string name="settings_grant_button">授权</string>
     <string name="settings_info_section">应用信息</string>
     <string name="settings_version_label">版本</string>
+    <string name="settings_debug_section">调试与日志</string>
+    <string name="settings_logs_title">蓝牙调试日志</string>
+    <string name="logs_clear_button">清空日志</string>
 
     <string name="settings_widget_section">桌面微件</string>
     <string name="settings_add_widget_button">添加心率微件</string>

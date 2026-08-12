@@ -12,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import io.wiger.pulsex.features.main.MainScreen
 import io.wiger.pulsex.features.onboarding.OnboardingScreen
+import io.wiger.pulsex.features.settings.BluetoothLogScreen
 import io.wiger.pulsex.ui.theme.PulseXTheme
 
 @Composable
@@ -38,7 +39,15 @@ fun App(
             composable<AppNavigation.Main> {
                 MainScreen(
                     onConnectClick = onConnectClick,
-                    onDisconnectClick = onDisconnectClick
+                    onDisconnectClick = onDisconnectClick,
+                    toBluetoothLogs = {
+                        navController.navigate(AppNavigation.BluetoothLogs)
+                    }
+                )
+            }
+            composable<AppNavigation.BluetoothLogs> {
+                BluetoothLogScreen(
+                    onBackClick = { navController.popBackStack() }
                 )
             }
         }

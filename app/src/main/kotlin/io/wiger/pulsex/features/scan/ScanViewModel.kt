@@ -88,7 +88,7 @@ class ScanViewModel @Inject constructor(
             bluetoothScanner.scanDevices(
                 scanFilters = listOf(
                     ScanFilter.Builder()
-                        .setServiceUuid(ParcelUuid(BluetoothConstant.heartbeatUUID))
+                        .setServiceUuid(ParcelUuid(BluetoothConstant.heartbeatServiceUUID))
                         .build()
                 )
             ).collect { result ->

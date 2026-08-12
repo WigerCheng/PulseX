@@ -8,4 +8,7 @@ object AppNavigation {
 
     @Serializable
     object Onboarding
+
+    @Serializable
+    object BluetoothLogs
 }
