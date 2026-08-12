@@ -1,0 +1,123 @@
+<resources>
+    <string name="app_name">PulseX</string>
+    <string name="onboarding_step_count">第 %1$d 步，共 %2$d 步</string>
+    <string name="onboarding_bluetooth_permission_title">蓝牙权限</string>
+    <string name="onboarding_bluetooth_permission_desc">PulseX 需要访问您的蓝牙权限以发现并连接您的心跳设备。</string>
+    <string name="onboarding_permission_granted">已授予权限</string>
+    <string name="onboarding_grant_bluetooth_permission">授予蓝牙权限</string>
+    <string name="onboarding_enable_bluetooth_title">开启蓝牙</string>
+    <string name="onboarding_enable_bluetooth_desc">请确保系统蓝牙已开启，以便应用能够与心率带进行实时通信。</string>
+    <string name="onboarding_bluetooth_enabled">蓝牙已开启</string>
+    <string name="onboarding_enable_bluetooth_button">开启蓝牙</string>
+    <string name="onboarding_notification_permission_title">通知权限</string>
+    <string name="onboarding_notification_permission_desc">允许通知后，您可以在后台或锁屏状态下实时查看当前的心跳。该权限是可选的。</string>
+    <string name="onboarding_grant_notification_permission">授予通知权限</string>
+    <string name="onboarding_live_update_permission_title">实时通知提醒</string>
+    <string name="onboarding_live_update_permission_desc">Android 16 全新的实时通知功能。开启后，即使在锁屏界面或使用其他应用时，您也能时刻关注心跳波动，确保运动安全与高效。</string>
+    <string name="onboarding_live_update_permission_granted">已开启实时通知</string>
+    <string name="onboarding_grant_live_update_permission">开启实时通知</string>
+    <string name="onboarding_start_button">开始使用</string>
+    <string name="onboarding_next_step">下一步</string>
+    <string name="heartbeat_live">实时</string>
+    <string name="heartbeat_bpm">BPM</string>
+    <string name="heartbeat_normal">正常</string>
+    <string name="heartbeat_disconnected">未连接</string>
+    <string name="heartbeat_value_with_bpm">%1$d BPM</string>
+
+    <string name="notification_heartbeat_title">当前心跳: %1$d</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">状态</string>
+    <string name="nav_record">记录</string>
+    <string name="nav_search">设备</string>
+    <string name="nav_settings">设置</string>
+
+    <!-- 设置 -->
+    <string name="settings_title">设置</string>
+    <string name="settings_permissions_section">权限与状态</string>
+    <string name="settings_bluetooth_status">蓝牙</string>
+    <string name="settings_notification_status">通知</string>
+    <string name="settings_live_update_status">Live Update 提醒</string>
+    <string name="settings_status_on">已开启</string>
+    <string name="settings_status_off">已关闭</string>
+    <string name="settings_status_granted">已授权</string>
+    <string name="settings_status_denied">未授权</string>
+    <string name="settings_fix_button">修复</string>
+    <string name="settings_enable_button">开启</string>
+    <string name="settings_grant_button">授权</string>
+    <string name="settings_info_section">应用信息</string>
+    <string name="settings_version_label">版本</string>
+
+    <string name="settings_widget_section">桌面微件</string>
+    <string name="settings_add_widget_button">添加心率微件</string>
+    <string name="settings_widget_desc">将心率微件固定到桌面以快速查看。</string>
+
+    <!-- Home -->
+    <string name="home_no_devices">未发现设备</string>
+    <string name="home_scan_devices">扫描设备</string>
+    <string name="home_scan_devices_desc">开始扫描以发现并连接您的心率设备。</string>
+    <string name="home_recent_session">最近记录</string>
+    <string name="home_bluetooth_off_warning">系统蓝牙已关闭</string>
+
+    <!-- Session History -->
+    <string name="history_title">历史 Sessions</string>
+    <string name="history_clear_all">清空记录</string>
+    <string name="history_empty">暂无 Session 记录</string>
+    <string name="history_deleted">已删除 Session 记录</string>
+    <string name="history_undo">撤回</string>
+    <string name="history_clear_confirm_msg">确定要清空所有的 Session 记录吗？此操作无法撤销。</string>
+    <string name="history_detail_title">Session 详情</string>
+    <string name="history_duration_label">时长: %1$s</string>
+    <string name="history_max_label">最高: %1$d BPM</string>
+    <string name="history_min_label">最低: %1$d BPM</string>
+    <string name="history_avg_label">平均: %1$d BPM</string>
+    <string name="history_start_time_label">开始时间: %1$s</string>
+    <string name="history_end_time_label">结束时间: %1$s</string>
+    <string name="history_duration_full_label">记录时长: %1$s</string>
+    <string name="history_max_heart_rate">最高心率</string>
+    <string name="history_min_heart_rate">最低心率</string>
+    <string name="history_avg_heart_rate">平均心率</string>
+    <string name="history_avg_short">平均</string>
+    <string name="history_trend_label">心率变动趋势:</string>
+
+    <!-- Scan -->
+    <string name="scan_title">扫描设备</string>
+    <string name="scan_no_devices">未发现设备</string>
+    <string name="scan_start">开始扫描</string>
+    <string name="scan_rescan">重新扫描</string>
+
+    <!-- Record -->
+    <string name="record_status_recording">正在记录…</string>
+    <string name="record_current_label">当前心率</string>
+    <string name="record_max_label">最高</string>
+    <string name="record_min_label">最低</string>
+    <string name="record_stop_save">停止并保存 Session</string>
+    <string name="record_title">心率变动 Session 记录</string>
+    <string name="record_desc_ready">随时开始记录您运动或休息过程中的心率变动状态</string>
+    <string name="record_desc_not_connected">请先连接您的心率设备</string>
+    <string name="record_start">开始记录 Session</string>
+    <string name="record_dialog_title">记录名称</string>
+    <string name="record_dialog_hint">例如：晨跑</string>
+
+    <!-- Common -->
+    <string name="common_hint">提示</string>
+    <string name="common_confirm">确定</string>
+    <string name="common_cancel">取消</string>
+    <string name="common_close">关闭</string>
+    <string name="common_enable">去开启</string>
+    <string name="common_connect">连接</string>
+    <string name="common_disconnect">断开</string>
+    <string name="common_delete">删除记录</string>
+
+    <string name="unknown_name">未知设备</string>
+    <string name="unknown_address">未知地址</string>
+
+    <!-- Content Descriptions -->
+    <string name="cd_home">首页</string>
+    <string name="cd_record">记录</string>
+    <string name="cd_search">搜索</string>
+    <string name="cd_settings">设置</string>
+    <string name="cd_stop">停止</string>
+    <string name="cd_start">开始</string>
+    <string name="cd_delete">删除</string>
+</resources>

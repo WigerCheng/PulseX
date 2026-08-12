@@ -1,0 +1,123 @@
+<resources>
+    <string name="app_name">PulseX</string>
+    <string name="onboarding_step_count">Step %1$d of %2$d</string>
+    <string name="onboarding_bluetooth_permission_title">Bluetooth Permission</string>
+    <string name="onboarding_bluetooth_permission_desc">PulseX needs Bluetooth access to discover and connect to your heart rate devices.</string>
+    <string name="onboarding_permission_granted">Permission Granted</string>
+    <string name="onboarding_grant_bluetooth_permission">Grant Bluetooth Permission</string>
+    <string name="onboarding_enable_bluetooth_title">Enable Bluetooth</string>
+    <string name="onboarding_enable_bluetooth_desc">Please ensure Bluetooth is enabled for real-time communication with the heart rate belt.</string>
+    <string name="onboarding_bluetooth_enabled">Bluetooth Enabled</string>
+    <string name="onboarding_enable_bluetooth_button">Enable Bluetooth</string>
+    <string name="onboarding_notification_permission_title">Notification Permission</string>
+    <string name="onboarding_notification_permission_desc">Allowing notifications lets you see your heart rate in real-time in the background or on the lock screen. This is optional.</string>
+    <string name="onboarding_grant_notification_permission">Grant Notification Permission</string>
+    <string name="onboarding_live_update_permission_title">Live Update Alerts</string>
+    <string name="onboarding_live_update_permission_desc">Android 16\'s new Live Update feature. Stay informed of heart rate fluctuations even on the lock screen or while using other apps.</string>
+    <string name="onboarding_live_update_permission_granted">Live Update Enabled</string>
+    <string name="onboarding_grant_live_update_permission">Enable Live Update</string>
+    <string name="onboarding_start_button">Start Using</string>
+    <string name="onboarding_next_step">Next</string>
+    <string name="heartbeat_live">LIVE</string>
+    <string name="heartbeat_bpm">BPM</string>
+    <string name="heartbeat_normal">Normal</string>
+    <string name="heartbeat_disconnected">Disconnected</string>
+    <string name="heartbeat_value_with_bpm">%1$d BPM</string>
+
+    <string name="notification_heartbeat_title">Current Heart Rate: %1$d</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Status</string>
+    <string name="nav_record">Sessions</string>
+    <string name="nav_search">Devices</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_permissions_section">Permissions &amp; Status</string>
+    <string name="settings_bluetooth_status">Bluetooth</string>
+    <string name="settings_notification_status">Notifications</string>
+    <string name="settings_live_update_status">Live Update Alerts</string>
+    <string name="settings_status_on">Enabled</string>
+    <string name="settings_status_off">Disabled</string>
+    <string name="settings_status_granted">Granted</string>
+    <string name="settings_status_denied">Denied</string>
+    <string name="settings_fix_button">Fix</string>
+    <string name="settings_enable_button">Enable</string>
+    <string name="settings_grant_button">Grant</string>
+    <string name="settings_info_section">App Info</string>
+    <string name="settings_version_label">Version</string>
+
+    <string name="settings_widget_section">Home Screen Widget</string>
+    <string name="settings_add_widget_button">Add Heart Rate Widget</string>
+    <string name="settings_widget_desc">Pin a heart rate widget to your home screen for quick access.</string>
+
+    <!-- Home -->
+    <string name="home_no_devices">No Found Devices</string>
+    <string name="home_scan_devices">Scan Devices</string>
+    <string name="home_scan_devices_desc">Start scanning to find and connect your heart rate device.</string>
+    <string name="home_recent_session">Recent Session</string>
+    <string name="home_bluetooth_off_warning">Bluetooth is turned off</string>
+
+    <!-- Session History -->
+    <string name="history_title">History Sessions</string>
+    <string name="history_clear_all">Clear All</string>
+    <string name="history_empty">No Session Records</string>
+    <string name="history_deleted">Session record deleted</string>
+    <string name="history_undo">Undo</string>
+    <string name="history_clear_confirm_msg">Are you sure you want to clear all session records? This action cannot be undone.</string>
+    <string name="history_detail_title">Session Details</string>
+    <string name="history_duration_label">Duration: %1$s</string>
+    <string name="history_max_label">Max: %1$d BPM</string>
+    <string name="history_min_label">Min: %1$d BPM</string>
+    <string name="history_avg_label">Avg: %1$d BPM</string>
+    <string name="history_start_time_label">Start Time: %1$s</string>
+    <string name="history_end_time_label">End Time: %1$s</string>
+    <string name="history_duration_full_label">Recorded Duration: %1$s</string>
+    <string name="history_max_heart_rate">Max Heart Rate</string>
+    <string name="history_min_heart_rate">Min Heart Rate</string>
+    <string name="history_avg_heart_rate">Avg Heart Rate</string>
+    <string name="history_avg_short">Avg</string>
+    <string name="history_trend_label">Heart Rate Trend:</string>
+
+    <!-- Scan -->
+    <string name="scan_title">Scan Devices</string>
+    <string name="scan_no_devices">No devices found</string>
+    <string name="scan_start">Start Scanning</string>
+    <string name="scan_rescan">Rescan</string>
+
+    <!-- Record -->
+    <string name="record_status_recording">Recording…</string>
+    <string name="record_current_label">Current</string>
+    <string name="record_max_label">Max</string>
+    <string name="record_min_label">Min</string>
+    <string name="record_stop_save">Stop &amp; Save Session</string>
+    <string name="record_title">Heart Rate Session Recording</string>
+    <string name="record_desc_ready">Start recording your heart rate during exercise or rest at any time</string>
+    <string name="record_desc_not_connected">Please connect your heart rate device first</string>
+    <string name="record_start">Start Session Recording</string>
+    <string name="record_dialog_title">Session Name</string>
+    <string name="record_dialog_hint">e.g., Morning Run</string>
+
+    <!-- Common -->
+    <string name="common_hint">Hint</string>
+    <string name="common_confirm">Confirm</string>
+    <string name="common_cancel">Cancel</string>
+    <string name="common_close">Close</string>
+    <string name="common_enable">Enable</string>
+    <string name="common_connect">Connect</string>
+    <string name="common_disconnect">Disconnect</string>
+    <string name="common_delete">Delete Record</string>
+
+    <string name="unknown_name">Unknown Name</string>
+    <string name="unknown_address">Unknown Address</string>
+
+    <!-- Content Descriptions -->
+    <string name="cd_home">Home</string>
+    <string name="cd_record">Record</string>
+    <string name="cd_search">Search</string>
+    <string name="cd_settings">Settings</string>
+    <string name="cd_stop">Stop</string>
+    <string name="cd_start">Start</string>
+    <string name="cd_delete">Delete</string>
+</resources>
