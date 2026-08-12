@@ -8,6 +8,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.wiger.pulsex.data.local.db.AppDatabase
+import io.wiger.pulsex.data.local.db.BluetoothLogDao
 import io.wiger.pulsex.data.local.db.ScanResultDao
 import io.wiger.pulsex.data.local.db.SessionDao
 import javax.inject.Singleton
@@ -36,5 +37,10 @@ object DatabaseModule {
     @Provides
     fun provideSessionDao(database: AppDatabase): SessionDao {
         return database.sessionDao()
+    }
+
+    @Provides
+    fun provideBluetoothLogDao(database: AppDatabase): BluetoothLogDao {
+        return database.bluetoothLogDao()
     }
 }

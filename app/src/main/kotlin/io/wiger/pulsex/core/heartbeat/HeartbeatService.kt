@@ -5,6 +5,9 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
+import android.bluetooth.BluetoothGattConnectionSettings
+import android.bluetooth.BluetoothGattDescriptor
+import android.bluetooth.BluetoothGattService
 import android.bluetooth.BluetoothProfile
 import android.content.Intent
 import android.content.pm.ServiceInfo
@@ -19,11 +22,13 @@ import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import io.wiger.pulsex.R
 import io.wiger.pulsex.core.bluetooth.BluetoothConstant
+import io.wiger.pulsex.core.bluetooth.BluetoothLogger
 import io.wiger.pulsex.core.notification.NotificationProvider
 import io.wiger.pulsex.core.system.SystemProvider
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.util.concurrent.Executors
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
@@ -41,6 +46,9 @@ class HeartbeatService : LifecycleService() {
     @Inject
     lateinit var notificationProvider: NotificationProvider
 
+    @Inject
+    lateinit var bluetoothLogger: BluetoothLogger
+
     private var bluetoothGatt: BluetoothGatt? = null
     private var isForeground = false
 
@@ -52,29 +60,24 @@ class HeartbeatService : LifecycleService() {
 
     private val baseNotification by lazy {
         NotificationCompat.Builder(this, NotificationProvider.CHANNEL_ID)
-            .setContentTitle(getString(R.string.app_name))
-            .setSmallIcon(R.drawable.ic_heart)
-            .setOngoing(true)
-            .setRequestPromotedOngoing(true)
-            .setShowWhen(false)
+            .setContentTitle(getString(R.string.app_name)).setSmallIcon(R.drawable.ic_heart)
+            .setOngoing(true).setRequestPromotedOngoing(true).setShowWhen(false)
     }
 
     override fun onCreate() {
         super.onCreate()
-        Log.d(TAG, "Service created")
-        systemProvider.isBluetoothEnabledFlow
-            .onEach { isEnabled ->
-                if (!isEnabled) {
-                    Log.d(TAG, "Bluetooth disabled, disconnecting GATT")
-                    close()
-                }
+        bluetoothLogger.d(TAG, "Service created")
+        systemProvider.isBluetoothEnabledFlow.onEach { isEnabled ->
+            if (!isEnabled) {
+                bluetoothLogger.w(TAG, "Bluetooth disabled, disconnecting GATT")
+                close()
             }
-            .launchIn(lifecycleScope)
+        }.launchIn(lifecycleScope)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-        Log.d(TAG, "Service started")
+        bluetoothLogger.d(TAG, "Service started")
         return START_STICKY
     }
 
@@ -86,13 +89,14 @@ class HeartbeatService : LifecycleService() {
     private fun handleHeartbeatChange(newValue: Int) {
         // Send via Broadcast as requested
         HeartbeatBroadcastReceiver.sendHeartbeat(this, newValue)
-        
+
         // Update notification if in foreground
         if (isForeground) {
-            val notification = baseNotification
-                .setContentTitle(getString(R.string.notification_heartbeat_title, newValue))
-                .setShortCriticalText("$newValue")
-                .build()
+            val notification = baseNotification.setContentTitle(
+                getString(
+                    R.string.notification_heartbeat_title, newValue
+                )
+            ).setShortCriticalText("$newValue").build()
             notificationProvider.notifyNotification(NOTIFICATION_ID, notification)
         }
     }
@@ -108,22 +112,27 @@ class HeartbeatService : LifecycleService() {
 
     @SuppressLint("MissingPermission")
     fun connect(device: BluetoothDevice): Boolean = try {
-        Log.d(TAG, "Connecting to device: ${device.address}")
-        close() // Close previous if any
-        bluetoothGatt = device.connectGatt(
-            this@HeartbeatService,
-            false,
-            bluetoothGattCallback
-        )
+        bluetoothLogger.i(TAG, "Connecting to device: ${device.address} (${device.name})")
+        close()
+        bluetoothGatt = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN) {
+            val setting = BluetoothGattConnectionSettings.Builder().build()
+            device.connectGatt(
+                setting, Executors.newSingleThreadExecutor(), bluetoothGattCallback
+            )
+        } else {
+            device.connectGatt(
+                this@HeartbeatService, false, bluetoothGattCallback
+            )
+        }
         true
     } catch (e: Exception) {
-        Log.e(TAG, "connect failed", e)
+        bluetoothLogger.e(TAG, "connect failed", e)
         false
     }
 
     @SuppressLint("MissingPermission")
     fun close() {
-        Log.d(TAG, "Closing GATT connection")
+        bluetoothLogger.d(TAG, "Closing GATT connection")
         bluetoothGatt?.let { gatt ->
             gatt.disconnect()
             gatt.close()
@@ -137,42 +146,75 @@ class HeartbeatService : LifecycleService() {
 
         @SuppressLint("MissingPermission")
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
-            Log.d(TAG, "onConnectionStateChange: status=$status, newState=$newState")
+            bluetoothLogger.d(TAG, "onConnectionStateChange: status=$status, newState=$newState")
+
             if (newState == BluetoothProfile.STATE_CONNECTED) {
-                Log.d(TAG, "Connected to GATT server")
+                bluetoothLogger.i(TAG, "Connected to GATT server")
                 gatt?.discoverServices()
-                lifecycleScope.launch {
-                    broadcastConnectionState(true)
-                }
+                broadcastConnectionState(true)
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-                Log.d(TAG, "Disconnected from GATT server")
-                lifecycleScope.launch {
-                    close()
-                }
+                bluetoothLogger.i(TAG, "Disconnected from GATT server")
+                close()
             }
         }
 
+        @SuppressLint("MissingPermission")
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
-            if (status == BluetoothGatt.GATT_SUCCESS && gatt != null) {
-                Log.d(TAG, "Services discovered")
-                val heartbeatGattService = gatt.getService(BluetoothConstant.heartbeatUUID)
-                val heartbeatCharacteristic = heartbeatGattService?.characteristics.orEmpty()
-                    .firstOrNull { it.uuid == BluetoothConstant.heartbeatMeasurementUUID }
-                
-                heartbeatCharacteristic?.let { 
-                    enableHeartbeatNotification(gatt, it)
+            if (status != BluetoothGatt.GATT_SUCCESS) {
+                bluetoothLogger.w(TAG, "status != BluetoothGatt.GATT_SUCCESS: status=$status")
+                return
+            }
+            if (gatt == null) {
+                bluetoothLogger.w(TAG, "gatt == null")
+                return
+            }
+            val heartbeatGattService: BluetoothGattService? =
+                gatt.getService(BluetoothConstant.heartbeatServiceUUID)
+            if (heartbeatGattService == null) {
+                bluetoothLogger.w(TAG, "Heartbeat service not found")
+                return
+            }
+            val heartbeatCharacteristic: BluetoothGattCharacteristic? =
+                heartbeatGattService.getCharacteristic(BluetoothConstant.heartbeatMeasurementUUID)
+            if (heartbeatCharacteristic == null) {
+                bluetoothLogger.w(TAG, "Heartbeat characteristic not found")
+                return
+            }
+            bluetoothLogger.i(TAG, "Heartbeat characteristic found")
+            enableNotifications(gatt, heartbeatCharacteristic)
+
+            lifecycleScope.launch {
+                if (!isForeground) {
+                    startForegroundCompat()
                 }
-            } else {
-                Log.w(TAG, "onServicesDiscovered: status=$status")
             }
         }
 
-        override fun onCharacteristicChanged(
-            gatt: BluetoothGatt,
-            characteristic: BluetoothGattCharacteristic,
-            value: ByteArray,
+        @SuppressLint("MissingPermission")
+        private fun enableNotifications(
+            gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic
         ) {
-            processHeartbeatCharacteristic(characteristic)
+            val properties = characteristic.properties
+            val isNotifySupported =
+                (properties and BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0
+            if (!isNotifySupported) {
+                bluetoothLogger.w(TAG, "Characteristic does not support notifications")
+                gatt.readCharacteristic(characteristic)
+                return
+            }
+            gatt.setCharacteristicNotification(characteristic, true)
+            val descriptor =
+                characteristic.getDescriptor(BluetoothConstant.clientCharacteristicConfigUUID)
+            if (descriptor == null) {
+                bluetoothLogger.w(TAG, "Client characteristic configuration descriptor not found")
+                return
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                gatt.writeDescriptor(descriptor, BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE)
+            } else {
+                descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE)
+                gatt.writeDescriptor(descriptor)
+            }
         }
 
         override fun onCharacteristicRead(
@@ -182,34 +224,25 @@ class HeartbeatService : LifecycleService() {
             status: Int,
         ) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                processHeartbeatCharacteristic(characteristic)
+                processHeartbeatData(value)
             }
+        }
+
+        override fun onCharacteristicChanged(
+            gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, value: ByteArray
+        ) {
+            processHeartbeatData(value)
         }
     }
 
-    @SuppressLint("MissingPermission")
-    private fun enableHeartbeatNotification(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
-        gatt.setCharacteristicNotification(characteristic, true)
-        gatt.readCharacteristic(characteristic)
-        
-        // Start foreground service when we actually start getting data or are about to
-        lifecycleScope.launch {
-            if (!isForeground) {
-                startForegroundCompat()
-            }
+    private fun processHeartbeatData(value: ByteArray) {
+        if (value.isEmpty()) {
+            bluetoothLogger.w(TAG, "Heartbeat data is empty")
+            return
         }
-    }
-
-    private fun processHeartbeatCharacteristic(characteristic: BluetoothGattCharacteristic) {
-        if (characteristic.uuid != BluetoothConstant.heartbeatMeasurementUUID) return
-        val flag = characteristic.properties
-        val format = when (flag and 0x01) {
-            0x01 -> BluetoothGattCharacteristic.FORMAT_UINT16
-            else -> BluetoothGattCharacteristic.FORMAT_UINT8
-        }
-        val heartbeat = characteristic.getIntValue(format, 1)
-        Log.d(TAG, "Heartbeat received: $heartbeat")
-        currentHeartbeat = heartbeat
+        val heartbeatData = parseHeartRateMeasurement(value)
+        bluetoothLogger.d(TAG, "Heartbeat data: $heartbeatData")
+        currentHeartbeat = heartbeatData.heartRate
     }
 
     private fun startForegroundCompat() {
@@ -221,10 +254,7 @@ class HeartbeatService : LifecycleService() {
             0
         }
         ServiceCompat.startForeground(
-            this,
-            NOTIFICATION_ID,
-            notification,
-            foregroundServiceType
+            this, NOTIFICATION_ID, notification, foregroundServiceType
         )
         isForeground = true
     }

@@ -31,6 +31,7 @@ fun MainScreen(
     modifier: Modifier = Modifier,
     onConnectClick: (BluetoothDevice) -> Unit = {},
     onDisconnectClick: () -> Unit = {},
+    toBluetoothLogs: () -> Unit = {}
 ) {
     val pagerState = rememberPagerState { 4 }
     val scope = rememberCoroutineScope()
@@ -77,7 +78,8 @@ fun MainScreen(
     ) { innerPadding ->
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .padding(bottom = innerPadding.calculateBottomPadding()),
             userScrollEnabled = false
         ) { page ->
@@ -98,7 +100,9 @@ fun MainScreen(
                     }
                 )
 
-                3 -> SettingScreen()
+                3 -> SettingScreen(
+                    onLogsClick = toBluetoothLogs
+                )
             }
         }
     }
