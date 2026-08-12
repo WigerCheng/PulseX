@@ -3,7 +3,8 @@ name: Android Release
 on:
   push:
     tags:
-      - 'v*' # 当推送以 v 开头的标签时触发，例如 v1.0.0
+      - 'v*' # 当推送以 v 开头的标签时触发
+  workflow_dispatch: # 允许在 GitHub Actions 页面手动触发
 
 permissions:
   contents: write
@@ -29,14 +30,26 @@ jobs:
         run: chmod +x gradlew
 
       - name: Decode Keystore
-        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ./wiger_dev.jks
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > wiger_dev.jks
 
       - name: Build with Gradle
-        run: ./gradlew assembleRelease
+        run: ./gradlew assembleRelease bundleRelease
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apk
+          path: app/build/outputs/apk/release/*.apk
+
+      - name: Upload AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-bundle
+          path: app/build/outputs/bundle/release/*.aab
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
@@ -44,6 +57,7 @@ jobs:
         with:
           files: |
             app/build/outputs/apk/release/*.apk
+            app/build/outputs/bundle/release/*.aab
           generate_release_notes: true
           draft: false
           prerelease: false

@@ -22,10 +22,30 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        create("release") {
+            val keystoreFile = rootProject.file("wiger_dev.jks")
+            val pStorePassword = System.getenv("KEYSTORE_PASSWORD")
+            val pKeyAlias = System.getenv("KEY_ALIAS")
+            val pKeyPassword = System.getenv("KEY_PASSWORD")
+
+            if (keystoreFile.exists() && !pStorePassword.isNullOrBlank()) {
+                storeFile = keystoreFile
+                storePassword = pStorePassword
+                keyAlias = pKeyAlias
+                keyPassword = pKeyPassword
+            } else {
+                // 如果在 CI 环境下缺失配置，打印警告（或者你可以改为抛出异常）
+                println("Warning: Release signing configuration is incomplete. APK will be unsigned.")
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
